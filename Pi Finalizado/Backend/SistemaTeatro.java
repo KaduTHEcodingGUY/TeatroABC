@@ -4,11 +4,18 @@ public class SistemaTeatro {
     private final ControleIngressos gerenciadorIngressos;
     private final CalculoLucro calculadoraLucro;
     private final PrecosPorArea gerenciadorPrecos;
+    private static SistemaTeatro InstanciaSistema;
 
-    public SistemaTeatro() {
+    private SistemaTeatro() {
         this.gerenciadorIngressos = new ControleIngressos();
         this.gerenciadorPrecos = new PrecosPorArea();
         this.calculadoraLucro = new CalculoLucro(gerenciadorIngressos, gerenciadorPrecos);
+    }
+    public static SistemaTeatro getInstancia(){
+        if(InstanciaSistema == null){
+            InstanciaSistema = new SistemaTeatro();
+        }
+            return InstanciaSistema;
     }
 
     public String getPecaMaisIngressos() {
