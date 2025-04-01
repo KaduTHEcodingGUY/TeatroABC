@@ -3,7 +3,6 @@ import javax.swing.*;
 
 import Backend.CadastroService;
 import Backend.Navegador;
-
 import java.awt.*;
 
 public class TelaCadastro extends JFrame {
@@ -34,7 +33,7 @@ public class TelaCadastro extends JFrame {
         JPanel painelImagem = new JPanel();
         painelImagem.setBackground(new Color(30, 30, 30));
         JLabel labelImagem = new JLabel();
-        ImageIcon imagem = new ImageIcon("Banner0.png");
+        ImageIcon imagem = new ImageIcon(getClass().getResource("/utilitarios/Banner0.png"));
         labelImagem.setIcon(new ImageIcon(imagem.getImage().getScaledInstance(600, 200, Image.SCALE_SMOOTH)));
         painelImagem.add(labelImagem);
         painelPrincipal.add(painelImagem, BorderLayout.NORTH);

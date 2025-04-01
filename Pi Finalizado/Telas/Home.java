@@ -1,15 +1,17 @@
 package Telas;
+
 import javax.swing.*;
-
 import Backend.Navegador;
-
 import java.awt.*;
 
 public class Home extends JFrame {
     private final Navegador navegador;
+    private final ImageIcon imagemBanner;
 
     public Home(Navegador navegador) {
         this.navegador = navegador;
+        this.imagemBanner = new ImageIcon("utilitarios/Banner1.png"); // Caminho direto
+
         setTitle("Teatro ABC");
         setSize(800, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,11 +23,8 @@ public class Home extends JFrame {
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(30, 30, 30));
 
-        JPanel barraLateral = criarBarraLateral();
-        JPanel containerBanner = criarContainerBanner();
-
-        add(barraLateral, BorderLayout.WEST);
-        add(containerBanner, BorderLayout.CENTER);
+        add(criarBarraLateral(), BorderLayout.WEST);
+        add(criarContainerBanner(), BorderLayout.CENTER);
     }
 
     private JPanel criarBarraLateral() {
@@ -40,21 +39,16 @@ public class Home extends JFrame {
         tituloLateral.setForeground(Color.WHITE);
         tituloLateral.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton BtcomprarIng = criarBotao("Comprar ingresso", new Color(55, 71, 79), "TelaCompraIngresso");
-        JButton BtImprimirIng = criarBotao("Imprimir ingresso", new Color(69, 90, 100), "TelaImprimirIngresso");
-        JButton BtExibirEst = criarBotao("Exibir Estatísticas", new Color(97, 97, 97), "TelaEstatisticas");
-        JButton BtSair = criarBotao("Sair", new Color(183, 28, 28), "Sair");
-
         barraLateral.add(tituloLateral);
         barraLateral.add(Box.createRigidArea(new Dimension(0, 20)));
-        barraLateral.add(BtcomprarIng);
+        barraLateral.add(criarBotao("Comprar ingresso", new Color(55, 71, 79), "TelaCompraIngresso"));
         barraLateral.add(Box.createRigidArea(new Dimension(0, 10)));
-        barraLateral.add(BtImprimirIng);
+        barraLateral.add(criarBotao("Imprimir ingresso", new Color(69, 90, 100), "TelaImprimirIngresso"));
         barraLateral.add(Box.createRigidArea(new Dimension(0, 10)));
-        barraLateral.add(BtExibirEst);
+        barraLateral.add(criarBotao("Exibir Estatísticas", new Color(97, 97, 97), "TelaEstatisticas"));
         barraLateral.add(Box.createRigidArea(new Dimension(0, 10)));
-        barraLateral.add(BtSair);
-       
+        barraLateral.add(criarBotao("Sair", new Color(183, 28, 28), "Sair"));
+
         return barraLateral;
     }
 
@@ -63,8 +57,10 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                ImageIcon bannerImg = redimensionarImagem("Banner1.png", getWidth(), getHeight());
-                g.drawImage(bannerImg.getImage(), 0, 0, getWidth(), getHeight(), this);
+                if (imagemBanner.getImage() != null) {
+                    ImageIcon bannerImg = redimensionarImagem(imagemBanner, getWidth(), getHeight());
+                    g.drawImage(bannerImg.getImage(), 0, 0, getWidth(), getHeight(), this);
+                }
             }
         };
         containerBanner.setBackground(new Color(20, 20, 20));
@@ -85,12 +81,7 @@ public class Home extends JFrame {
         return botao;
     }
 
-    private ImageIcon redimensionarImagem(String caminho, int largura, int altura) {
-        ImageIcon iconeOriginal = new ImageIcon(caminho);
-        Image imagemOriginal = iconeOriginal.getImage();
-        Image imagemRedimensionada = imagemOriginal.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-        return new ImageIcon(imagemRedimensionada);
+    private ImageIcon redimensionarImagem(ImageIcon iconeOriginal, int largura, int altura) {
+        return new ImageIcon(iconeOriginal.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH));
     }
-   
-    
 }

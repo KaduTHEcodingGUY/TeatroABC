@@ -11,8 +11,8 @@ public class TelaImprimirIngresso extends JFrame {
     private SistemaTeatro sistemaTeatro;
     String arquivo;
 
-    public TelaImprimirIngresso(SistemaTeatro sistemaTeatro) {
-        this.sistemaTeatro = sistemaTeatro;
+    public TelaImprimirIngresso() {
+        this.sistemaTeatro = SistemaTeatro.getInstancia();
 
         setTitle("Imprimir Ingresso");
         setSize(900, 350);

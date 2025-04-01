@@ -1,9 +1,7 @@
 package Telas;
 import javax.swing.*;
-
 import Backend.ControleIngressos;
 import Backend.SistemaTeatro;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +15,27 @@ public class TelaCompraIngresso extends JFrame {
     private String sessaoSelecionada;
     private List<String> assentosSelecionados;
 
-    public TelaCompraIngresso(SistemaTeatro sistemaTeatro, MapaTeatroScrollavel mapaTeatro) {
+    private ImageIcon bannerPadrao;
+    private ImageIcon posterFrozen;
+    private ImageIcon posterMichael;
+    private ImageIcon posterRomeu;
+
+    public TelaCompraIngresso(MapaTeatroScrollavel mapaTeatro) {
         this.assentosSelecionados = new ArrayList<>();
-        this.sistemaTeatro = sistemaTeatro;
+        this.sistemaTeatro = SistemaTeatro.getInstancia();
+        this.controleIngresso = sistemaTeatro.getGerenciadorIngressos();
         this.mapaTeatro = mapaTeatro;
-        
+
+        carregarImagens();
         configurarJanela();
         inicializarComponentes();
+    }
+
+    private void carregarImagens() {
+        bannerPadrao = new ImageIcon(getClass().getResource("/utilitarios/Banner0.png"));
+        posterFrozen = new ImageIcon(getClass().getResource("/utilitarios/poster1.png"));
+        posterMichael = new ImageIcon(getClass().getResource("/utilitarios/poster2.png"));
+        posterRomeu = new ImageIcon(getClass().getResource("/utilitarios/poster3.png"));
     }
 
     private void configurarJanela() {
@@ -67,7 +79,10 @@ public class TelaCompraIngresso extends JFrame {
             if (pecaSelecionada == null || sessaoSelecionada == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma peça e uma sessão!", "Erro", JOptionPane.ERROR_MESSAGE);
             } else {
-                new MapaTeatroScrollavel(sistemaTeatro, this, controleIngresso).setVisible(true);
+                if (mapaTeatro == null) {
+                    mapaTeatro = new MapaTeatroScrollavel(this, controleIngresso);
+                }
+                mapaTeatro.setVisible(true);
             }
         });
 
@@ -86,23 +101,27 @@ public class TelaCompraIngresso extends JFrame {
     private JPanel criarPainelDireito() {
         JPanel painelDireito = new JPanel(new BorderLayout());
         painelDireito.setBackground(new Color(20, 20, 20));
-        posterLabel = new JLabel();
+        posterLabel = new JLabel(bannerPadrao);
         posterLabel.setHorizontalAlignment(SwingConstants.CENTER);
         painelDireito.add(posterLabel, BorderLayout.CENTER);
         return painelDireito;
     }
 
     private void atualizarPoster(String pecaSelecionada) {
-        String caminhoImagem = switch (pecaSelecionada) {
-            case "Frozen o musical" -> "poster1.png";
-            case "Musical do Michael Jackson" -> "poster2.png";
-            case "Romeu & Julieta" -> "poster3.png";
-            default -> "Banner0.png";
-        };
-
-        ImageIcon imagemOriginal = new ImageIcon(caminhoImagem);
-        Image imagemRedimensionada = imagemOriginal.getImage().getScaledInstance(posterLabel.getWidth(), posterLabel.getHeight(), Image.SCALE_SMOOTH);
-        posterLabel.setIcon(new ImageIcon(imagemRedimensionada));
+        switch (pecaSelecionada) {
+            case "Frozen o musical":
+                posterLabel.setIcon(posterFrozen);
+                break;
+            case "Musical do Michael Jackson":
+                posterLabel.setIcon(posterMichael);
+                break;
+            case "Romeu & Julieta":
+                posterLabel.setIcon(posterRomeu);
+                break;
+            default:
+                posterLabel.setIcon(bannerPadrao);
+                break;
+        }
     }
 
     private void atualizarSessoes(String pecaSelecionada, JComboBox<String> comboSessao) {

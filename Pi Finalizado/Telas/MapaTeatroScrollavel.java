@@ -19,10 +19,10 @@ public class MapaTeatroScrollavel extends JFrame  {
     private double total;
     private PrecosPorArea precosPorArea;
 
-    public MapaTeatroScrollavel(SistemaTeatro sistemaTeatro, TelaCompraIngresso telaCompraIngresso, ControleIngressos controleIngressos) {
-        this.sistemaTeatro = sistemaTeatro;
+    public MapaTeatroScrollavel(TelaCompraIngresso telaCompraIngresso, ControleIngressos controleIngressos) {
+        this.sistemaTeatro = SistemaTeatro.getInstancia();
         this.telaCompraIngresso = telaCompraIngresso;
-        this.controleIngressos = controleIngressos;
+        this.controleIngressos = sistemaTeatro.getGerenciadorIngressos();
         this.assentosSelecionados = new ArrayList<>();
         this.precosPorArea = new PrecosPorArea();
         this.total = 0;
@@ -53,7 +53,7 @@ public class MapaTeatroScrollavel extends JFrame  {
         JPanel containerMapa = new JPanel(new BorderLayout());
         containerMapa.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         containerMapa.setBackground(Color.DARK_GRAY);
-        JLabel labelImagem = new JLabel(new ImageIcon("PALCO.png"), SwingConstants.CENTER);
+        JLabel labelImagem = new JLabel(new ImageIcon(getClass().getResource("/utilitarios/PALCO.png")), SwingConstants.CENTER);
         containerMapa.add(labelImagem, BorderLayout.CENTER);
         containerMapa.setPreferredSize(new Dimension(800, 300));
         return containerMapa;
