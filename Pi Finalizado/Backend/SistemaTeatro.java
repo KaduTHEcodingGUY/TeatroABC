@@ -17,6 +17,9 @@ public class SistemaTeatro {
         }
             return InstanciaSistema;
     }
+    public ControleIngressos getGerenciadorIngressos(){
+        return gerenciadorIngressos;
+    }
 
     public String getPecaMaisIngressos() {
         return calculadoraLucro.getPecaMaisMovimentada();
