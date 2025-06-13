@@ -19,7 +19,7 @@ public class ClubeFidelidade implements ProvedorView {
     public Node getView() {
         BorderPane viewLayout = new BorderPane();
 
-        Image imagemFundo = new Image(getClass().getResourceAsStream("/Utilitarios/TesteHome.jpg"));
+        Image imagemFundo = new Image(getClass().getResourceAsStream("/Utilitarios/Testelogin.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, true); // cover
         BackgroundImage backgroundImage = new BackgroundImage(imagemFundo, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         viewLayout.setBackground(new Background(backgroundImage));

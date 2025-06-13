@@ -108,7 +108,7 @@ public class Telalogin {
             System.out.println("Login bem-sucedido para: " + emailField.getText());
 
             // Cria a tela principal
-            JavaFxteste telaHome = new JavaFxteste();
+            HomeBarraLateral telaHome = new HomeBarraLateral();
             Parent homeRoot = telaHome.getRoot(primaryStage); // Passa o Stage para a tela Home
             Scene homeScene = new Scene(homeRoot);
             
