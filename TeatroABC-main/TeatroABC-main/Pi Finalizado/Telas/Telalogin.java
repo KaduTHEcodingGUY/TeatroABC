@@ -37,11 +37,14 @@ public class Telalogin {
     private ImageView createBackgroundImage() {
         ImageView imageView = new ImageView();
         try {
-            // CORRIGIDO: Adicionado "/" no início para buscar da raiz da pasta 'resources'
-            Image backgroundImage = new Image(getClass().getResourceAsStream("/Utilitarios/TesteLogin.jpg"));
+            String imagePath = "Pi Finalizado/Utilitarios/TesteLogin.jpg";
+            java.io.File file = new java.io.File(imagePath);
+            System.out.println("[DEBUG Telalogin] Caminho absoluto da imagem: " + file.getAbsolutePath());
+            System.out.println("[DEBUG Telalogin] Arquivo existe? " + file.exists());
+            Image backgroundImage = new Image(file.toURI().toString());
             imageView.setImage(backgroundImage);
         } catch (Exception e) {
-            System.err.println("Erro ao carregar a imagem de fundo /Utilitarios/Banner1.png. A tela ficará preta.");
+            System.err.println("Erro ao carregar a imagem de fundo (Telalogin). A tela ficará preta.");
             e.printStackTrace();
         }
         imageView.setPreserveRatio(true);
@@ -105,16 +108,33 @@ public class Telalogin {
         // --- AÇÃO DO BOTÃO DE LOGIN ATUALIZADA ---
         loginButton.setOnAction(e -> {
             // Aqui iria a sua lógica de validação de login
-            System.out.println("Login bem-sucedido para: " + emailField.getText());
-
-            // Cria a tela principal
-            HomeBarraLateral telaHome = new HomeBarraLateral();
-            Parent homeRoot = telaHome.getRoot(primaryStage); // Passa o Stage para a tela Home
-            Scene homeScene = new Scene(homeRoot);
+            // System.out.println("Login bem-sucedido para: " + emailField.getText());
             
-            // Troca a cena na janela principal
-            primaryStage.setScene(homeScene);
-            primaryStage.setFullScreen(true);
+            String email = emailField.getText();
+            String password = passwordField.getText();
+
+            if (email.isEmpty() || password.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Campos Vazios", "Por favor, preencha todos os campos.");
+                return;
+            }
+
+            if (Backend.Servicos.AuthService.signIn(email, password)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Sucesso");
+                alert.setHeaderText(null);
+                alert.setContentText("Login realizado com sucesso!");
+
+                alert.setOnHidden(evt -> {
+                    HomeBarraLateral barraLateral = new HomeBarraLateral();
+                    Parent rootWithSidebar = barraLateral.getRoot(primaryStage);
+                    Scene scene = new Scene(rootWithSidebar);
+                    primaryStage.setScene(scene);
+                    primaryStage.setFullScreen(true);
+                });
+                alert.show();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Erro no Login", "Email ou senha incorretos. Tente novamente.");
+            }
         });
         
         // ... (resto do código do formulário continua o mesmo)
@@ -129,5 +149,13 @@ public class Telalogin {
 
         formVBox.getChildren().addAll(titleLabel, emailBox, passwordBox, cadastroHlink, loginButton);
         return formVBox;
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -39,11 +39,14 @@ public class TelaCadastro {
     private ImageView createBackgroundImage() {
         ImageView imageView = new ImageView();
         try {
-            // CORRIGIDO: Adicionado "/" no início para buscar da raiz da pasta 'resources'
-            Image backgroundImage = new Image(getClass().getResourceAsStream("/Utilitarios/Banner1.png"));
+            String imagePath = "Pi Finalizado/Utilitarios/Banner1.png";
+            java.io.File file = new java.io.File(imagePath);
+            System.out.println("[DEBUG TelaCadastro] Caminho absoluto da imagem: " + file.getAbsolutePath());
+            System.out.println("[DEBUG TelaCadastro] Arquivo existe? " + file.exists());
+            Image backgroundImage = new Image(file.toURI().toString());
             imageView.setImage(backgroundImage);
         } catch (Exception e) {
-            System.err.println("Erro ao carregar a imagem de fundo /Utilitarios/Banner1.png. A tela ficará preta.");
+            System.err.println("Erro ao carregar a imagem de fundo (TelaCadastro). A tela ficará preta.");
             e.printStackTrace();
         }
         imageView.setPreserveRatio(true);
@@ -97,14 +100,35 @@ public class TelaCadastro {
             if (senhaField.getText().isEmpty()) {
                 showAlert(Alert.AlertType.WARNING, "Campo Vazio", "O campo de senha não pode estar vazio.");
             } else if (senhaField.getText().equals(confirmarSenhaField.getText())) {
-                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Cadastro realizado com sucesso!");
-                
                 // --- ADICIONADO: Lógica para voltar à tela de login após o sucesso ---
-                Telalogin telaLogin = new Telalogin();
-                Parent loginRoot = telaLogin.getRoot(primaryStage);
-                Scene loginScene = new Scene(loginRoot);
-                primaryStage.setScene(loginScene);
-                primaryStage.setFullScreen(true);
+                // Telalogin telaLogin = new Telalogin();
+                // Parent loginRoot = telaLogin.getRoot(primaryStage);
+                // Scene loginScene = new Scene(loginRoot);
+                // primaryStage.setScene(loginScene);
+                // primaryStage.setFullScreen(true);
+                
+                // --- MODIFICADO: Chamar AuthService para cadastro --- 
+                TextField nomeField = (TextField) nomeBox.getChildren().get(1);
+                TextField emailField = (TextField) emailBox.getChildren().get(1);
+                TextField cpfField = (TextField) cpfBox.getChildren().get(1);
+                TextField telefoneField = (TextField) telefoneBox.getChildren().get(1);
+
+                String nome = nomeField.getText();
+                String email = emailField.getText();
+                String cpf = cpfField.getText();
+                String telefone = telefoneField.getText();
+                String senha = senhaField.getText();
+
+                if (Backend.Servicos.AuthService.signUp(email, senha, nome, cpf, telefone)) {
+                    showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Cadastro realizado com sucesso!");
+                    Telalogin telaLogin = new Telalogin();
+                    Parent loginRoot = telaLogin.getRoot(primaryStage);
+                    Scene loginScene = new Scene(loginRoot);
+                    primaryStage.setScene(loginScene);
+                    primaryStage.setFullScreen(true);
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Erro no Cadastro", "Não foi possível realizar o cadastro. Verifique os dados ou tente novamente.");
+                }
                 
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erro de Senha", "As senhas não coincidem. Tente novamente.");
