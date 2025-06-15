@@ -36,7 +36,7 @@ public class HomeBarraLateral {
     private static final Background BG_BOTAO_SELECIONADO = new Background(new BackgroundFill(Color.web("#005A9E"), new CornerRadii(5), Insets.EMPTY));
 
     public Parent getRoot(Stage primaryStage) {
-        clubeFidelidadeViewProvider = new ClubeFidelidade();
+        clubeFidelidadeViewProvider = new ClubeFidelidade(node -> setCenterView(node, true));
         rootLayout = new BorderPane();
         rootLayout.setBackground(new Background(new BackgroundFill(Color.web("#1E1E1E"), CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -73,7 +73,7 @@ public class HomeBarraLateral {
 
         Button btnComprar = createNavButtonWithIcon("Comprar Ingressos", "/Utilitarios/ticket.png", new TelaCompraIngresso(this::setCenterView));
         Button btnMeusIngressos = createNavButtonWithIcon("Meus Ingressos", "/Utilitarios/tickets.png", new MeusIngressos());
-        Button btnClube = createNavButtonWithIcon("Clube Fidelidade", "/Utilitarios/ClubedeFidelidadeVermelho.png", new ClubeFidelidade());
+        Button btnClube = createNavButtonWithIcon("Clube Fidelidade", "/Utilitarios/ClubedeFidelidadeVermelho.png", new ClubeFidelidade(node -> setCenterView(node, true)));
         Button btnEstatisticas = createNavButtonWithIcon("Estatisticas", "/Utilitarios/ClubedeFidelidadeVermelho.png", new TelaEstatisticas());
 
         if ("gestor".equalsIgnoreCase(tipoUsuario)) {

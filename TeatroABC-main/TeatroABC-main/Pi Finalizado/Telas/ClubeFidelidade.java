@@ -99,7 +99,10 @@ public class ClubeFidelidade implements ProvedorView {
             
             btnAssinar.setOnAction(event -> {
                 if (onNavigateToPayment != null) {
-                    onNavigateToPayment.accept(new TelaPagamentoCartao(onNavigateToPayment).getView());
+                    TelaPagamentoCartao telaPagamento = new TelaPagamentoCartao(node -> {
+                        onNavigateToPayment.accept(new ClubeFidelidade(onNavigateToPayment).getView());
+                    });
+                    onNavigateToPayment.accept(telaPagamento.getView());
                 }
             });
         }
