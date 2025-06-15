@@ -3,6 +3,7 @@ package Telas;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,19 +16,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import Interfaces.ProvedorView;
 
-// REMOVIDO: extends Application
-public class TelaCadastro {
+public class TelaCadastro implements ProvedorView {
 
     // NOVO MÉTODO: Monta e retorna a interface de cadastro.
-    public Parent getRoot(Stage primaryStage) {
+    public Node getView() {
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: black;");
 
         ImageView backgroundImageView = createBackgroundImage();
         Pane gradientOverlay = createGradientOverlay();
         // MODIFICADO: Passamos o Stage para o formulário, para que o botão de cadastro possa navegar.
-        VBox registrationForm = createRegistrationForm(primaryStage);
+        VBox registrationForm = createRegistrationForm(new Stage());
 
         registrationForm.maxWidthProperty().bind(root.widthProperty().multiply(0.6));
         registrationForm.maxHeightProperty().bind(root.heightProperty().multiply(0.8));
@@ -121,9 +122,9 @@ public class TelaCadastro {
 
                 if (Backend.Servicos.AuthService.signUp(email, senha, nome, cpf, telefone)) {
                     showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Cadastro realizado com sucesso!");
-                    Telalogin telaLogin = new Telalogin();
-                    Parent loginRoot = telaLogin.getRoot(primaryStage);
-                    Scene loginScene = new Scene(loginRoot);
+                    Telalogin telaLogin = new Telalogin(primaryStage);
+                    Node loginRoot = telaLogin.getView();
+                    Scene loginScene = new Scene((Parent) loginRoot);
                     primaryStage.setScene(loginScene);
                     primaryStage.setFullScreen(true);
                 } else {

@@ -1,135 +1,104 @@
 package Telas;
-import javax.swing.*;
 
-import Backend.SistemaTeatro;
 import Utilitarios.ValidadorCPF;
-
-import java.awt.*;
+import Interfaces.ProvedorView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import java.io.File;
 
-public class TelaImprimirIngresso extends JFrame {
-    private SistemaTeatro sistemaTeatro;
-    String arquivo;
+public class TelaImprimirIngresso implements ProvedorView {
+    private String arquivo;
 
-    public TelaImprimirIngresso() {
-        this.sistemaTeatro = SistemaTeatro.getInstancia();
-
-        setTitle("Imprimir Ingresso");
-        setSize(900, 350);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        inicializarComponentes(); // Inicializar a interface
-    }
-
-    public void inicializarComponentes() {
-        // Configuração do layout principal
-        setLayout(new BorderLayout());
-        getContentPane().setBackground(new Color(30, 30, 30)); // Fundo escuro
-
-        // Barra lateral removida
-
+    @Override
+    public Node getView() {
         // Container principal
-        JPanel containerPrincipal = new JPanel();
-        containerPrincipal.setLayout(new BorderLayout());
-        containerPrincipal.setBackground(new Color(30, 30, 30)); // Fundo escuro
+        BorderPane containerPrincipal = new BorderPane();
+        containerPrincipal.setStyle("-fx-background-color: #1E1E1E;"); // Fundo escuro
 
         // Painel central (campo de CPF e botão "Imprimir")
-        JPanel painelCentral = new JPanel();
-        painelCentral.setLayout(new GridBagLayout());
-        painelCentral.setBackground(new Color(30, 30, 30)); // Fundo escuro
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaçamento entre os componentes
+        VBox painelCentral = new VBox(20); // 20 pixels de espaçamento entre elementos
+        painelCentral.setAlignment(Pos.CENTER);
+        painelCentral.setPadding(new Insets(20));
+        painelCentral.setStyle("-fx-background-color: #1E1E1E;"); // Fundo escuro
 
         // Campo de texto para CPF
-        JLabel labelCPF = new JLabel("Inserir CPF:");
-        labelCPF.setFont(new Font("Arial", Font.PLAIN, 16));
-        labelCPF.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        painelCentral.add(labelCPF, gbc);
+        Label labelCPF = new Label("Inserir CPF:");
+        labelCPF.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
 
-        JTextField campoCPF = new JTextField(15);
-        campoCPF.setFont(new Font("Arial", Font.PLAIN, 16));
-         arquivo = campoCPF.getText();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        painelCentral.add(campoCPF, gbc);
+        TextField campoCPF = new TextField();
+        campoCPF.setStyle("-fx-font-size: 16px; -fx-background-color: #2D2D2D; -fx-text-fill: white;");
+        campoCPF.setPromptText("Digite o CPF");
+        campoCPF.setMaxWidth(200);
 
         // Botão para Imprimir
-        JButton botaoImprimir = new JButton("Imprimir");
-        botaoImprimir.setFont(new Font("Arial", Font.BOLD, 16));
-        botaoImprimir.setBackground(new Color(69, 90, 100)); // Cor cinza
-        botaoImprimir.setForeground(Color.WHITE);
-        botaoImprimir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        Button botaoImprimir = new Button("Imprimir");
+        botaoImprimir.setStyle("-fx-font-size: 16px; -fx-background-color: #455A64; -fx-text-fill: white;");
+        botaoImprimir.setOnMouseEntered(e -> botaoImprimir.setStyle("-fx-font-size: 16px; -fx-background-color: #546E7A; -fx-text-fill: white;"));
+        botaoImprimir.setOnMouseExited(e -> botaoImprimir.setStyle("-fx-font-size: 16px; -fx-background-color: #455A64; -fx-text-fill: white;"));
 
         // Ação do botão "Imprimir"
-        botaoImprimir.addActionListener(e -> {
+        botaoImprimir.setOnAction(e -> {
             try {
                 String cpf = campoCPF.getText();
         
                 // Verifica se o CPF é válido e não está vazio
                 if (cpf.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Por favor, insira um CPF.");
+                    showAlert(Alert.AlertType.WARNING, "Aviso", "Por favor, insira um CPF.");
                 } else if (!ValidadorCPF.isCPF(cpf)) {
-                    JOptionPane.showMessageDialog(this, "CPF inválido. Por favor, insira um CPF válido.");
+                    showAlert(Alert.AlertType.ERROR, "Erro", "CPF inválido. Por favor, insira um CPF válido.");
                 } else {
                     // CPF válido
-                    JOptionPane.showMessageDialog(this, "Ingresso impresso para o CPF: " + cpf);
-                    String arquivo = cpf + ".txt"; // Definindo o nome do arquivo
-                    BaixarArq(); // Método que deve ser chamado para baixar o arquivo
+                    showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Ingresso impresso para o CPF: " + cpf);
+                    arquivo = cpf + ".txt"; // Definindo o nome do arquivo
+                    baixarArquivo(); // Método que deve ser chamado para baixar o arquivo
                 }
         
             } catch (Exception err) {
-                // Captura qualquer outra exceção e exibe uma mensagem genérica
-                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao processar o CPF. Por favor, tente novamente.");
-                System.out.println("Erro: " + err.getMessage()); // Exibe a mensagem de erro no console para debug
+                showAlert(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro ao processar o CPF. Por favor, tente novamente.");
+                System.out.println("Erro: " + err.getMessage());
             }
         });
-        
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        painelCentral.add(botaoImprimir, gbc);
+        painelCentral.getChildren().addAll(labelCPF, campoCPF, botaoImprimir);
 
-        // Adicionar o painel central ao container principal
-        containerPrincipal.add(painelCentral, BorderLayout.CENTER);
+        // Container do banner
+        ImageView bannerView = new ImageView(new Image(getClass().getResourceAsStream("/Utilitarios/Banner0.png")));
+        bannerView.setFitWidth(600);
+        bannerView.setFitHeight(350);
+        bannerView.setPreserveRatio(true);
 
-        // Container do banner (imagem ou conteúdo adicional)
-        JPanel containerBanner = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                ImageIcon bannerImg = redimensionarImagem("Banner0.png", getWidth(), getHeight());
-                g.drawImage(bannerImg.getImage(), 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        containerBanner.setBackground(new Color(20, 20, 20)); // Fundo escuro
-        containerBanner.setLayout(new BorderLayout());
+        // Adicionar os componentes ao container principal
+        containerPrincipal.setLeft(painelCentral);
+        containerPrincipal.setCenter(bannerView);
 
-        // Adicionar o banner ao lado direito
-        add(containerPrincipal, BorderLayout.WEST);
-        add(containerBanner, BorderLayout.CENTER);
+        return containerPrincipal;
     }
 
-    // Método auxiliar para redimensionar imagens
-    private ImageIcon redimensionarImagem(String caminho, int largura, int altura) {
-        ImageIcon iconeOriginal = new ImageIcon(caminho);
-        Image imagemOriginal = iconeOriginal.getImage();
-        Image imagemRedimensionada = imagemOriginal.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-        return new ImageIcon(imagemRedimensionada);
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
-    //Método baixar arquivo
 
-    private void BaixarArq(){
-        File arquivoexiste = new File(arquivo);
+    private void baixarArquivo() {
+        File arquivoExiste = new File(arquivo);
 
-        if (arquivoexiste.exists()) {
-            // Mensagem informando o local do arquivo
-            JOptionPane.showMessageDialog(null, "Seu arquivo está disponível em: " + arquivoexiste.getAbsolutePath());
+        if (arquivoExiste.exists()) {
+            showAlert(Alert.AlertType.INFORMATION, "Sucesso", 
+                "Seu arquivo está disponível em: " + arquivoExiste.getAbsolutePath());
         } else {
-            JOptionPane.showMessageDialog(null, "Arquivo não encontrado.");
+            showAlert(Alert.AlertType.ERROR, "Erro", "Arquivo não encontrado.");
         }
     }
-    
-
 }

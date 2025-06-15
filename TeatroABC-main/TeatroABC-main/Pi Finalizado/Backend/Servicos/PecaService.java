@@ -1,6 +1,6 @@
 package Backend.Servicos;
 
-import Backend.Utilitarios.SupabaseConfig;
+import Backend.Servicos.SupabaseConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

@@ -2,7 +2,7 @@ package Backend.Servicos;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import Backend.Utilitarios.SupabaseConfig;
+import Backend.Servicos.SupabaseConfig;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;

@@ -3,6 +3,7 @@ package Telas;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,18 +15,20 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import Interfaces.ProvedorView;
 
-// REMOVIDO: extends Application
-public class Telalogin {
+public class Telalogin implements ProvedorView {
+    private Stage primaryStage;
 
-    // MÉTODO NOVO: Monta e retorna a interface de login.
-    // Ele recebe o Stage para poder trocar de tela no futuro.
-    public Parent getRoot(Stage primaryStage) {
+    public Telalogin(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    public Node getView() {
         StackPane root = new StackPane();
         ImageView backgroundImageView = createBackgroundImage();
         Pane gradientOverlay = createGradientOverlay();
-        // MODIFICADO: Passamos o Stage para o formulário, para que o botão de login funcione
-        VBox loginForm = createLoginForm(primaryStage);
+        VBox loginForm = createLoginForm();
 
         loginForm.maxWidthProperty().bind(root.widthProperty().multiply(0.4));
         loginForm.maxHeightProperty().bind(root.heightProperty().multiply(0.6));
@@ -58,8 +61,7 @@ public class Telalogin {
         return gradientPane;
     }
     
-    // MODIFICADO: Recebe o Stage como parâmetro
-    private VBox createLoginForm(Stage primaryStage) {
+    private VBox createLoginForm() {
         VBox formVBox = new VBox(10);
         formVBox.setAlignment(Pos.CENTER);
         formVBox.setPadding(new Insets(40, 40, 40, 40));
@@ -69,7 +71,6 @@ public class Telalogin {
         titleLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;");
         VBox.setMargin(titleLabel, new Insets(0, 0, 20, 0));
 
-        // ... (criação dos outros campos de texto continua a mesma)
         Label emailLabel = new Label("Email");
         emailLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #A0A0A0;");
         TextField emailField = new TextField();
@@ -88,14 +89,9 @@ public class Telalogin {
         Hyperlink cadastroHlink = new Hyperlink("Primeira vez? Se cadastre por aqui!");
         cadastroHlink.setStyle("-fx-text-fill: #FFC300; -fx-underline: false; -fx-border-color: transparent;");
         cadastroHlink.setOnAction(e -> {
-
-            // Cria a tela principal
-
             TelaCadastro telaCadastro = new TelaCadastro();
-            Parent cadastroRoot = telaCadastro.getRoot(primaryStage); // Passa o Stage para a tela Home
-            Scene cadastroScene = new Scene(cadastroRoot);
-            
-            // Troca a cena na janela principal
+            Node cadastroRoot = telaCadastro.getView();
+            Scene cadastroScene = new Scene((Parent) cadastroRoot);
             primaryStage.setScene(cadastroScene);
             primaryStage.setFullScreen(true);
         });
@@ -105,11 +101,7 @@ public class Telalogin {
         loginButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #000000; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 25; -fx-pref-width: 200px; -fx-pref-height: 45px;");
         VBox.setMargin(loginButton, new Insets(15, 0, 0, 0));
         
-        // --- AÇÃO DO BOTÃO DE LOGIN ATUALIZADA ---
         loginButton.setOnAction(e -> {
-            // Aqui iria a sua lógica de validação de login
-            // System.out.println("Login bem-sucedido para: " + emailField.getText());
-            
             String email = emailField.getText();
             String password = passwordField.getText();
 
@@ -137,7 +129,6 @@ public class Telalogin {
             }
         });
         
-        // ... (resto do código do formulário continua o mesmo)
         DropShadow glowEffect = new DropShadow(20, Color.rgb(70, 130, 255, 0.7));
         loginButton.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {

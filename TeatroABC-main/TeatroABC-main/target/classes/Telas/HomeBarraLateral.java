@@ -113,9 +113,9 @@ public class HomeBarraLateral {
         btnLogout.setBackground(new Background(new BackgroundFill(Color.web("#DC3545"), new CornerRadii(5), Insets.EMPTY)));
         
         btnLogout.setOnAction(event -> {
-            Telalogin telaLogin = new Telalogin();
-            Parent loginRoot = telaLogin.getRoot(primaryStage);
-            Scene loginScene = new Scene(loginRoot);
+            Telalogin telaLogin = new Telalogin(primaryStage);
+            Node loginRoot = telaLogin.getView();
+            Scene loginScene = new Scene((Parent) loginRoot);
             primaryStage.setScene(loginScene);
             primaryStage.setFullScreen(true);
         });

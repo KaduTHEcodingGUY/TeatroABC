@@ -1,6 +1,6 @@
 package Backend.Servicos;
 
-import Backend.Utilitarios.SupabaseConfig;
+import Backend.Servicos.SupabaseConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,12 +11,30 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IngressoService {
     private static final String API_URL = SupabaseConfig.SUPABASE_URL + "/rest/v1";
     private static final String API_KEY = SupabaseConfig.SUPABASE_ANON_KEY;
     private static final Gson gson = new Gson();
+    private static final Map<String, Integer> ingressosPorTipo = new HashMap<>();
+
+    static {
+        // Inicialização dos contadores de ingressos
+        ingressosPorTipo.put("Frozen", 0);
+        ingressosPorTipo.put("Michael Jackson", 0);
+        ingressosPorTipo.put("Romeu & Julieta", 0);
+        ingressosPorTipo.put("Sessão Manhã", 0);
+        ingressosPorTipo.put("Sessão Tarde", 0);
+        ingressosPorTipo.put("Sessão Noite", 0);
+        ingressosPorTipo.put("Plateia A", 0);
+        ingressosPorTipo.put("Plateia B", 0);
+        ingressosPorTipo.put("Frisa", 0);
+        ingressosPorTipo.put("Camarote", 0);
+        ingressosPorTipo.put("Balcão Nobre", 0);
+    }
 
     public static class DetalheIngresso {
         private String reserva_id;
@@ -127,5 +145,13 @@ public class IngressoService {
             e.printStackTrace();
         }
         return ingressos;
+    }
+
+    public static void incrementarIngresso(String tipo) {
+        ingressosPorTipo.put(tipo, ingressosPorTipo.getOrDefault(tipo, 0) + 1);
+    }
+
+    public static int getTotalIngressos(String tipo) {
+        return ingressosPorTipo.getOrDefault(tipo, 0);
     }
 } 
