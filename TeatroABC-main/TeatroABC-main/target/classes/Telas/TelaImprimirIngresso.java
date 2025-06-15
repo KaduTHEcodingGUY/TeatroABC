@@ -30,7 +30,7 @@ public class TelaImprimirIngresso implements ProvedorView {
         painelCentral.setPadding(new Insets(20));
         painelCentral.setStyle("-fx-background-color: #1E1E1E;"); // Fundo escuro
 
-        // Campo de texto para CPF
+        // Campo para digitar o CPF
         Label labelCPF = new Label("Inserir CPF:");
         labelCPF.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
 
@@ -39,27 +39,27 @@ public class TelaImprimirIngresso implements ProvedorView {
         campoCPF.setPromptText("Digite o CPF");
         campoCPF.setMaxWidth(200);
 
-        // Botão para Imprimir
+        // Botão de impressão
         Button botaoImprimir = new Button("Imprimir");
         botaoImprimir.setStyle("-fx-font-size: 16px; -fx-background-color: #455A64; -fx-text-fill: white;");
         botaoImprimir.setOnMouseEntered(e -> botaoImprimir.setStyle("-fx-font-size: 16px; -fx-background-color: #546E7A; -fx-text-fill: white;"));
         botaoImprimir.setOnMouseExited(e -> botaoImprimir.setStyle("-fx-font-size: 16px; -fx-background-color: #455A64; -fx-text-fill: white;"));
 
-        // Ação do botão "Imprimir"
+        // Lógica do botão de impressão
         botaoImprimir.setOnAction(e -> {
             try {
                 String cpf = campoCPF.getText();
         
-                // Verifica se o CPF é válido e não está vazio
+                // Validação do CPF
                 if (cpf.isEmpty()) {
                     showAlert(Alert.AlertType.WARNING, "Aviso", "Por favor, insira um CPF.");
                 } else if (!ValidadorCPF.isCPF(cpf)) {
                     showAlert(Alert.AlertType.ERROR, "Erro", "CPF inválido. Por favor, insira um CPF válido.");
                 } else {
-                    // CPF válido
+                    // CPF ok, gera o ingresso
                     showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Ingresso impresso para o CPF: " + cpf);
-                    arquivo = cpf + ".txt"; // Definindo o nome do arquivo
-                    baixarArquivo(); // Método que deve ser chamado para baixar o arquivo
+                    arquivo = cpf + ".txt"; // Nome do arquivo
+                    baixarArquivo(); // Gera o arquivo
                 }
         
             } catch (Exception err) {

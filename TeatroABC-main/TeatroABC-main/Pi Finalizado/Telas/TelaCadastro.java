@@ -20,14 +20,14 @@ import Interfaces.ProvedorView;
 
 public class TelaCadastro implements ProvedorView {
 
-    // NOVO MÉTODO: Monta e retorna a interface de cadastro.
+    // Monta a tela de cadastro
     public Node getView() {
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: black;");
 
         ImageView backgroundImageView = createBackgroundImage();
         Pane gradientOverlay = createGradientOverlay();
-        // MODIFICADO: Passamos o Stage para o formulário, para que o botão de cadastro possa navegar.
+        // Passa o Stage para o formulário permitir navegação
         VBox registrationForm = createRegistrationForm(new Stage());
 
         registrationForm.maxWidthProperty().bind(root.widthProperty().multiply(0.6));
@@ -61,7 +61,7 @@ public class TelaCadastro implements ProvedorView {
         return gradientPane;
     }
 
-    // MODIFICADO: Método agora recebe o Stage para permitir a navegação.
+    // Método que recebe o Stage para navegação
     private VBox createRegistrationForm(Stage primaryStage) {
         VBox formVBox = new VBox(20);
         formVBox.setAlignment(Pos.CENTER);

@@ -36,17 +36,16 @@ public class MeusIngressos implements ProvedorView {
     public Node getView() {
         BorderPane rootLayout = new BorderPane();
 
-        // --- TOP: A imagem e o título ---
-        // MODIFICADO: Não passamos mais o rootLayout, pois a altura será fixa.
+        // Cabeçalho com imagem e título
         StackPane topSection = createTopSection();
         rootLayout.setTop(topSection);
 
-        // --- CENTER: A ListView com fundo preto ---
+        // Lista de ingressos com fundo preto
         ListView<Ticket> listView = createListView();
         StackPane centerContainer = new StackPane(listView);
         centerContainer.setStyle("-fx-background-color: black;");
         
-        // MODIFICADO: Aumentamos a margem lateral para 80px para dar mais respiro.
+        // Margens laterais para melhor visualização
         StackPane.setMargin(listView, new Insets(20, 80, 20, 80));
 
         rootLayout.setCenter(centerContainer);
@@ -54,35 +53,28 @@ public class MeusIngressos implements ProvedorView {
         return rootLayout;
     }
 
-    /**
-     * Cria a seção superior com a imagem de fundo e o título.
-     */
+    // Cria o cabeçalho com imagem e título
     private StackPane createTopSection() {
         StackPane topPane = new StackPane();
-        // MODIFICADO: Altura preferida do container da imagem diminuída para 200px.
         topPane.setPrefHeight(200);
-        topPane.setMaxHeight(200); // Trava a altura máxima também.
+        topPane.setMaxHeight(200);
 
-        // Imagem de fundo da seção
+        // Imagem de fundo do cabeçalho
         ImageView topBanner = new ImageView(new Image(getClass().getResourceAsStream("/Utilitarios/Banner0.png")));
         
-        // A lógica de redimensionamento da imagem de fundo é trocada por uma abordagem mais simples e robusta
-        // usando um objeto Background, que se comporta melhor com o StackPane.
-        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, true); // cover
+        // Configura o fundo com a imagem
+        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(topBanner.getImage(),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         topPane.setBackground(new Background(backgroundImage));
 
-
+        // Título da página
         Label titulo = new Label("MEUS INGRESSOS");
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 32));
         titulo.setTextFill(Color.WHITE);
-        titulo.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 10, 0.4, 0, 0);"); // Sombra para legibilidade
+        titulo.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 10, 0.4, 0, 0);");
         
-        // MODIFICADO: Removemos a margem para deixar o alinhamento padrão do StackPane centralizar o título.
         StackPane.setAlignment(titulo, Pos.CENTER);
-
-        // Note que não adicionamos mais o topBanner como filho, pois ele agora é o fundo.
         topPane.getChildren().add(titulo);
         
         return topPane;

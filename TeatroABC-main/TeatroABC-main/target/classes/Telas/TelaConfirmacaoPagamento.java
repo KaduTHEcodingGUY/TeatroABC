@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -23,31 +24,38 @@ public class TelaConfirmacaoPagamento implements ProvedorView {
 
     @Override
     public Node getView() {
-        VBox layout = new VBox(20);
-        layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(50));
+        BorderPane rootLayout = new BorderPane();
+        rootLayout.setStyle("-fx-background-color: #1E1E1E;");
+        rootLayout.setPadding(new Insets(30));
 
-        Label titulo = new Label("Pagamento Confirmado!");
-        titulo.setFont(Font.font("Arial", FontWeight.BOLD, 30));
-        titulo.setTextFill(Color.WHITE);
+        // Título da página
+        Label title = new Label("Pagamento Confirmado!");
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 36));
+        title.setTextFill(Color.WHITE);
+        BorderPane.setAlignment(title, Pos.CENTER);
+        rootLayout.setTop(title);
 
-        Label codigoLabel = new Label("Seu código de ingresso é:");
-        codigoLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
-        codigoLabel.setTextFill(Color.WHITE);
+        // Mensagem de confirmação
+        VBox centerContent = new VBox(20);
+        centerContent.setAlignment(Pos.CENTER);
+        centerContent.setPadding(new Insets(40));
 
-        Label codigo = new Label(codigoIngresso);
-        codigo.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        codigo.setTextFill(Color.GREEN);
+        Label message = new Label("Seu pagamento foi processado com sucesso!");
+        message.setFont(Font.font("Arial", FontWeight.NORMAL, 24));
+        message.setTextFill(Color.WHITE);
 
+        // Botão para voltar ao início
         Button btnVoltar = new Button("Voltar ao Início");
-        btnVoltar.setStyle("-fx-background-color: #DC3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 25; -fx-padding: 10px 25px;");
+        btnVoltar.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 25; -fx-padding: 10px 25px;");
         btnVoltar.setOnAction(e -> {
             if (viewSwitcher != null) {
                 viewSwitcher.accept(new TelaCompraIngresso(viewSwitcher).getView(), true);
             }
         });
 
-        layout.getChildren().addAll(titulo, codigoLabel, codigo, btnVoltar);
-        return layout;
+        centerContent.getChildren().addAll(message, btnVoltar);
+        rootLayout.setCenter(centerContent);
+
+        return rootLayout;
     }
 } 

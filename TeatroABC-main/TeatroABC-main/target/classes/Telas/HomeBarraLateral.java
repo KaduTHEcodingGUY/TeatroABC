@@ -55,6 +55,7 @@ public class HomeBarraLateral {
         sidebarPane.setPrefWidth(250);
         sidebarPane.setBackground(new Background(new BackgroundFill(Color.web("#2D2D2D"), CornerRadii.EMPTY, Insets.EMPTY)));
 
+        // Logo do teatro
         ImageView logoView = new ImageView(new Image(getClass().getResourceAsStream("/Utilitarios/masks.png")));
         logoView.setFitHeight(60);
         logoView.setFitWidth(60);
@@ -66,11 +67,12 @@ public class HomeBarraLateral {
         VBox navButtons = new VBox(15);
         navButtons.setAlignment(Pos.TOP_CENTER);
         
-        // Busca o usuário atual e seu tipo
+        // Verifica o tipo de usuário logado
         String userId = AuthService.getCurrentUserId();
         Usuario usuario = UsuarioService.buscarUsuarioPorId(userId);
-        String tipoUsuario = (usuario != null) ? usuario.getTipoUsuario() : "cliente"; // Assume 'cliente' como padrão
+        String tipoUsuario = (usuario != null) ? usuario.getTipoUsuario() : "cliente"; // Padrão é cliente
 
+        // Botões do menu
         Button btnComprar = createNavButtonWithIcon("Comprar Ingressos", "/Utilitarios/ticket.png", new TelaCompraIngresso(this::setCenterView));
         Button btnMeusIngressos = createNavButtonWithIcon("Meus Ingressos", "/Utilitarios/tickets.png", new MeusIngressos());
         Button btnClube = createNavButtonWithIcon("Clube Fidelidade", "/Utilitarios/ClubedeFidelidadeVermelho.png", new ClubeFidelidade(node -> setCenterView(node, true)));

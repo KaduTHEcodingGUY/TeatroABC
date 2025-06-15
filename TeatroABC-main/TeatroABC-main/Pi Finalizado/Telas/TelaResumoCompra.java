@@ -51,6 +51,7 @@ public class TelaResumoCompra implements ProvedorView {
         sessaoSelecionada = PecaService.buscarSessaoPorId(sessaoId);
         
         if (sessaoSelecionada != null) {
+            // Busca a peça da sessão
             List<Peca> todasPecas = PecaService.listarPecas();
             for (Peca p : todasPecas) {
                 if (p.getId().equals(sessaoSelecionada.getPecaId())) {
@@ -64,12 +65,14 @@ public class TelaResumoCompra implements ProvedorView {
             System.err.println("[ERRO TelaResumoCompra] Sessão com ID " + sessaoId + " não encontrada.");
         }
 
+        // Calcula o preço total dos assentos
         precoTotal = 0.0;
         List<AreaAssento> todasAreas = AssentoService.listarAreasAssentos();
         for (String assentoId : assentoIds) {
             Assento assentoDetalhe = null;
             AreaAssento areaDoAssento = null;
             
+            // Encontra o assento e sua área
             for(AreaAssento area : todasAreas) {
                 List<Assento> assentosDaArea = AssentoService.listarAssentosPorArea(area.getId());
                 for(Assento ass : assentosDaArea) {
@@ -91,7 +94,7 @@ public class TelaResumoCompra implements ProvedorView {
             }
         }
 
-        // Verificar se o usuário é membro fidelidade
+        // Aplica desconto para membros do clube
         String userId = AuthService.getCurrentUserId();
         if (userId != null) {
             JsonObject userDetails = AuthService.getUserDetails(userId);

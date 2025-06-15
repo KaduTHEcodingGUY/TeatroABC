@@ -43,36 +43,38 @@ public class TelaEstatisticas implements ProvedorView {
         mainLayout.setStyle("-fx-background-color: #1E1E1E;");
         mainLayout.setPadding(new Insets(30));
 
+        // Título da página
         Label title = new Label("Estatísticas do Teatro");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 36));
         title.setTextFill(Color.WHITE);
         BorderPane.setAlignment(title, Pos.CENTER);
         mainLayout.setTop(title);
 
+        // Grid com os cards de estatísticas
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(30);
         grid.setVgap(30);
         grid.setPadding(new Insets(40, 0, 0, 0));
 
-        // Primeira linha
+        // Primeira linha de estatísticas
         grid.add(createMetricCard("Peça com Mais Ingressos Vendidos", pecaMaisVendidaValor), 0, 0);
         grid.add(createMetricCard("Peça com Menos Ingressos Vendidos", pecaMenosVendidaValor), 1, 0);
         grid.add(createMetricCard("Peça Mais Lucrativa", pecaMaisLucrativaValor), 2, 0);
 
-        // Segunda linha
+        // Segunda linha de estatísticas
         grid.add(createMetricCard("Sessão com Maior Ocupação", sessaoMaiorOcupacaoValor), 0, 1);
         grid.add(createMetricCard("Sessão com Menor Ocupação", sessaoMenorOcupacaoValor), 1, 1);
         grid.add(createMetricCard("Peça Menos Lucrativa", pecaMenosLucrativaValor), 2, 1);
 
-        // Terceira linha
+        // Terceira linha de estatísticas
         grid.add(createMetricCard("Faturamento Médio por Peça", faturamentoMedioValor), 0, 2);
         grid.add(createMetricCard("Faturamento com Assinaturas", faturamentoAssinaturasValor), 1, 2);
         grid.add(createMetricCard("Assinantes do Clube Fidelidade", assinantesValor), 2, 2);
 
         mainLayout.setCenter(grid);
 
-        // Criando o container para o botão e o feedback
+        // Botão de atualização
         VBox bottomContainer = new VBox(10);
         bottomContainer.setAlignment(Pos.CENTER);
 

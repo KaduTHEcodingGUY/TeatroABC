@@ -45,13 +45,14 @@ public class MapaAssentos implements ProvedorView {
     private String currentAreaId; // NOVO: Campo para armazenar o ID da área atualmente exibida (ex: "Camarote", "Frisa")
     private String currentAreaName; // NOVO: Campo para armazenar o NOME da área atualmente exibida
 
+    // Estilos dos assentos e setores
     private final String STYLE_ASSENTO_DISPONIVEL = "-fx-background-color: #555555; -fx-background-radius: 3px;";
     private final String STYLE_ASSENTO_SELECIONADO = "-fx-background-color: #DC3545; -fx-background-radius: 3px;";
     
     private final String STYLE_SETOR_NORMAL = "-fx-background-color: transparent; -fx-padding: 8px; -fx-border-color: transparent;";
     private final String STYLE_SETOR_HOVER = "-fx-background-color: #404040; -fx-padding: 8px; -fx-background-radius: 5px;";
     private final String STYLE_SETOR_SELECIONADO = "-fx-background-color: #005A9E; -fx-padding: 8px; -fx-background-radius: 5px;";
-    private final String STYLE_ASSENTO_RESERVADO = "-fx-background-color: #8B0000; -fx-background-radius: 3px;"; // NOVO: Estilo para assentos reservados
+    private final String STYLE_ASSENTO_RESERVADO = "-fx-background-color: #8B0000; -fx-background-radius: 3px;"; // Estilo para assentos já reservados
 
     // MODIFICADO: Construtor padrão que chama o novo construtor com sessaoId e viewSwitcher nulos
     public MapaAssentos() {
@@ -62,11 +63,11 @@ public class MapaAssentos implements ProvedorView {
     public MapaAssentos(Runnable onBackAction, String sessaoId, java.util.function.BiConsumer<Node, Boolean> viewSwitcher) {
         System.out.println("[DEBUG MapaAssentos] Construtor MapaAssentos chamado com sessaoId: " + sessaoId);
         this.onBackAction = onBackAction;
-        this.sessaoId = sessaoId; // Inicializa o sessaoId
-        this.viewSwitcher = viewSwitcher; // Inicializa o viewSwitcher
-        this.selectedSubCategory = null; // Inicializa sem subcategoria selecionada
-        this.currentAreaId = null; // Inicializa sem área atual
-        this.currentAreaName = null; // Inicializa sem nome de área atual
+        this.sessaoId = sessaoId;
+        this.viewSwitcher = viewSwitcher;
+        this.selectedSubCategory = null;
+        this.currentAreaId = null;
+        this.currentAreaName = null;
     }
 
     @Override

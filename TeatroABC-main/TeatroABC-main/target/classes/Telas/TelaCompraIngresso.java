@@ -41,15 +41,15 @@ public class TelaCompraIngresso implements ProvedorView {
     private Button btnContinuar;
     private HBox bannersContainer;
 
-    // Novo campo para o callback de troca de view
+    // Callback para trocar de tela
     private java.util.function.BiConsumer<Node, Boolean> viewSwitcher;
 
-    // Construtor padrão (mantenha se ainda for usado, mas priorize o novo)
+    // Construtor padrão
     public TelaCompraIngresso() {
-        this(null); // Chama o novo construtor com um Consumer nulo
+        this(null);
     }
 
-    // Novo construtor para receber a função de troca de view
+    // Construtor com callback de troca de tela
     public TelaCompraIngresso(java.util.function.BiConsumer<Node, Boolean> viewSwitcher) {
         this.viewSwitcher = viewSwitcher;
     }
@@ -75,14 +75,14 @@ public class TelaCompraIngresso implements ProvedorView {
         bannersContainer = new HBox(30);
         bannersContainer.setAlignment(Pos.CENTER);
         
-        // Carrega as peças do banco de dados
+        // Busca as peças no banco
         List<Peca> pecas = PecaService.listarPecas();
         System.out.println("Número de peças carregadas: " + pecas.size());
         for (Peca peca : pecas) {
             System.out.println("Carregando peça: " + peca.getTitulo());
             System.out.println("URL da imagem: " + peca.getUrlImagem());
             ImageView banner = createBanner(peca.getUrlImagem(), peca.getTitulo());
-            banner.setUserData(peca.getId()); // Armazena o ID da peça
+            banner.setUserData(peca.getId()); // Guarda o ID da peça
             bannersContainer.getChildren().add(banner);
         }
         

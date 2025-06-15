@@ -31,22 +31,23 @@ public class ClubeFidelidade implements ProvedorView {
     public Node getView() {
         BorderPane viewLayout = new BorderPane();
 
+        // Carrega a imagem de fundo
         try {
             String imagePath = "Pi Finalizado/Utilitarios/Testelogin.jpg";
             java.io.File file = new java.io.File(imagePath);
             System.out.println("[DEBUG ClubeFidelidade] Caminho absoluto da imagem: " + file.getAbsolutePath());
             System.out.println("[DEBUG ClubeFidelidade] Arquivo existe? " + file.exists());
             Image imagemFundo = new Image(file.toURI().toString());
-            BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, true); // cover
+            BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, true);
             BackgroundImage backgroundImage = new BackgroundImage(imagemFundo, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
             viewLayout.setBackground(new Background(backgroundImage));
         } catch (Exception e) {
             System.err.println("Erro ao carregar a imagem de fundo (ClubeFidelidade). Usando cor de fundo sólida.");
             e.printStackTrace();
-            // Em caso de erro, define um fundo de cor sólida para evitar NullPointerException
             viewLayout.setBackground(new Background(new BackgroundFill(Color.web("#1E1E1E"), CornerRadii.EMPTY, Insets.EMPTY)));
         }
 
+        // Título da página
         Label titulo = new Label("Clube Fidelidade");
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 36));
         titulo.setTextFill(Color.web("#FFD700"));
@@ -54,6 +55,7 @@ public class ClubeFidelidade implements ProvedorView {
         titulo.setPadding(new Insets(50, 0, 0, 0));
         viewLayout.setTop(titulo);
         
+        // Lista de benefícios
         VBox centerContent = new VBox(35);
         centerContent.setAlignment(Pos.CENTER);
         centerContent.setPadding(new Insets(0, 20, 20, 20));
