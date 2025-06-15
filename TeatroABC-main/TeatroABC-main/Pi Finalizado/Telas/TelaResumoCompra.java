@@ -22,6 +22,8 @@ import Backend.Servicos.PecaService.Sessao;
 import Backend.Servicos.AssentoService;
 import Backend.Servicos.AssentoService.Assento;
 import Backend.Servicos.AssentoService.AreaAssento;
+import Backend.Servicos.AuthService;
+import com.google.gson.JsonObject;
 
 public class TelaResumoCompra implements ProvedorView {
 
@@ -33,6 +35,8 @@ public class TelaResumoCompra implements ProvedorView {
     private Sessao sessaoSelecionada;
     private List<Assento> assentosDetalhes = new ArrayList<>();
     private double precoTotal = 0.0;
+    private double descontoFidelidade = 0.0;
+    private boolean isMembroFidelidade = false;
 
     public TelaResumoCompra(String sessaoId, List<String> assentoIds, BiConsumer<Node, Boolean> viewSwitcher) {
         System.out.println("[DEBUG TelaResumoCompra] Construtor TelaResumoCompra chamado com sessaoId: " + sessaoId + ", assentoIds: " + assentoIds.size());
@@ -86,6 +90,21 @@ public class TelaResumoCompra implements ProvedorView {
                 System.err.println("[ERRO TelaResumoCompra] Detalhes para o assento ID " + assentoId + " não encontrados.");
             }
         }
+
+        // Verificar se o usuário é membro fidelidade
+        String userId = AuthService.getCurrentUserId();
+        if (userId != null) {
+            JsonObject userDetails = AuthService.getUserDetails(userId);
+            if (userDetails != null && userDetails.has("membro_fidelidade")) {
+                isMembroFidelidade = userDetails.get("membro_fidelidade").getAsBoolean();
+                if (isMembroFidelidade) {
+                    descontoFidelidade = precoTotal * 0.10; // 10% de desconto
+                    precoTotal -= descontoFidelidade;
+                    System.out.println("[DEBUG TelaResumoCompra] Desconto de fidelidade aplicado: R$ " + descontoFidelidade);
+                }
+            }
+        }
+
         System.out.println("[DEBUG TelaResumoCompra] Preço total calculado: R$ " + precoTotal);
     }
 
@@ -118,11 +137,35 @@ public class TelaResumoCompra implements ProvedorView {
         assentosTitle.setTextFill(Color.WHITE);
         assentosBox.getChildren().add(assentosTitle);
 
+        List<AreaAssento> todasAreas = AssentoService.listarAreasAssentos();
         for (Assento assento : assentosDetalhes) {
-            Label assentoLabel = new Label("Fileira: " + assento.getFileira() + ", Número: " + assento.getNumero());
+            // Encontrar a área do assento
+            AreaAssento areaDoAssento = null;
+            for(AreaAssento area : todasAreas) {
+                List<Assento> assentosDaArea = AssentoService.listarAssentosPorArea(area.getId());
+                for(Assento ass : assentosDaArea) {
+                    if (ass.getId().equals(assento.getId())) {
+                        areaDoAssento = area;
+                        break;
+                    }
+                }
+                if (areaDoAssento != null) break;
+            }
+
+            String areaNome = areaDoAssento != null ? areaDoAssento.getNomeArea() : "N/A";
+            Label assentoLabel = new Label(String.format("Área: %s, Fileira: %s, Número: %s", 
+                areaNome, assento.getFileira(), assento.getNumero()));
             assentoLabel.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 16));
             assentoLabel.setTextFill(Color.LIGHTGRAY);
             assentosBox.getChildren().add(assentoLabel);
+        }
+
+        // Adicionar informações de desconto se aplicável
+        if (isMembroFidelidade) {
+            Label descontoLabel = new Label(String.format("Desconto Fidelidade (10%%): -R$ %.2f", descontoFidelidade));
+            descontoLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
+            descontoLabel.setTextFill(Color.web("#28a745")); // Verde para indicar desconto
+            assentosBox.getChildren().add(descontoLabel);
         }
 
         Label totalLabel = new Label(String.format("Total: R$ %.2f", precoTotal));

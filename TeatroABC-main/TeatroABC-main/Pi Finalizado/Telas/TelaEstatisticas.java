@@ -117,7 +117,7 @@ public class TelaEstatisticas implements ProvedorView {
         VBox card = new VBox(10);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(25));
-        card.setPrefSize(350, 150);
+        card.setPrefSize(450, 150);
         card.setStyle("-fx-background-color: #2D2D2D; -fx-background-radius: 10;");
 
         Label tituloLabel = new Label(titulo);
@@ -125,6 +125,8 @@ public class TelaEstatisticas implements ProvedorView {
         tituloLabel.setTextFill(Color.LIGHTGRAY);
         tituloLabel.setWrapText(true);
         tituloLabel.setTextAlignment(TextAlignment.CENTER);
+
+        valorLabel.setWrapText(true);
 
         card.getChildren().addAll(tituloLabel, valorLabel);
         return card;
@@ -153,14 +155,14 @@ public class TelaEstatisticas implements ProvedorView {
         System.out.println("Estatísticas recebidas DO SUPABASE: " + estatisticas);
 
         // Atualiza os labels com os dados do Supabase, usando "Sem valor" como padrão
-        pecaMaisVendidaValor.setText(getFormattedStatistic(estatisticas, "Peþa com mais ingressos vendidos"));
-        pecaMenosVendidaValor.setText(getFormattedStatistic(estatisticas, "Peþa com menos ingressos vendidos"));
-        sessaoMaiorOcupacaoValor.setText(getFormattedStatistic(estatisticas, "SessÒo com maior ocupaþÒo"));
-        sessaoMenorOcupacaoValor.setText(getFormattedStatistic(estatisticas, "SessÒo com menor ocupaþÒo"));
-        faturamentoMedioValor.setText(estatisticas.getOrDefault("Lucro mÚdio do teatro por peþa", "R$ 0,00"));
-        assinantesValor.setText(estatisticas.getOrDefault("N·mero total de assinantes", "0"));
-        pecaMaisLucrativaValor.setText(getFormattedStatistic(estatisticas, "Peþa mais lucrativa"));
-        pecaMenosLucrativaValor.setText(getFormattedStatistic(estatisticas, "Peþa menos lucrativa"));
+        pecaMaisVendidaValor.setText(getFormattedStatistic(estatisticas, "Peça com mais ingressos vendidos"));
+        pecaMenosVendidaValor.setText(getFormattedStatistic(estatisticas, "Peça com menos ingressos vendidos"));
+        sessaoMaiorOcupacaoValor.setText(getFormattedStatistic(estatisticas, "Sessão com maior ocupação"));
+        sessaoMenorOcupacaoValor.setText(getFormattedStatistic(estatisticas, "Sessão com menor ocupação"));
+        faturamentoMedioValor.setText(estatisticas.getOrDefault("Lucro médio do teatro por peça", "R$ 0,00"));
+        assinantesValor.setText(estatisticas.getOrDefault("Número total de assinantes", "0"));
+        pecaMaisLucrativaValor.setText(getFormattedStatistic(estatisticas, "Peça mais lucrativa"));
+        pecaMenosLucrativaValor.setText(getFormattedStatistic(estatisticas, "Peça menos lucrativa"));
         faturamentoAssinaturasValor.setText(estatisticas.getOrDefault("Faturamento com assinaturas", "R$ 0,00"));
     }
 

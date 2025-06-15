@@ -75,10 +75,28 @@ public class ReservaService {
             connReserva.setRequestProperty("Prefer", "return=representation"); // Retorna o objeto criado
             connReserva.setDoOutput(true);
 
+            // Calcular o valor total da reserva
+            double valorTotal = 0.0;
+            for (AssentoReservaDetalhe assento : assentos) {
+                valorTotal += assento.getPreco();
+            }
+
+            // Verificar se o usuário é membro fidelidade
+            JsonObject userDetails = AuthService.getUserDetails(usuarioId);
+            boolean isMembroFidelidade = false;
+            if (userDetails != null && userDetails.has("membro_fidelidade")) {
+                isMembroFidelidade = userDetails.get("membro_fidelidade").getAsBoolean();
+                if (isMembroFidelidade) {
+                    double desconto = valorTotal * 0.10; // 10% de desconto
+                    valorTotal -= desconto;
+                    System.out.println("[DEBUG ReservaService] Desconto de fidelidade aplicado: R$ " + desconto);
+                }
+            }
+
             JsonObject payloadReserva = new JsonObject();
             payloadReserva.addProperty("usuario_id", usuarioId);
-            // O código_ingresso será gerado por uma função de banco de dados
             payloadReserva.addProperty("status_pagamento", "Confirmado"); // Definir como Confirmado na criação se o pagamento for imediato
+            payloadReserva.addProperty("pagamento", valorTotal); // Adicionar o valor total pago com desconto se aplicável
 
             System.out.println("[DEBUG ReservaService] Payload da Reserva: " + payloadReserva.toString());
 

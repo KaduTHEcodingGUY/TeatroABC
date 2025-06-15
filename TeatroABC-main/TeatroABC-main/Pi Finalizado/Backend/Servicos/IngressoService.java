@@ -28,6 +28,9 @@ public class IngressoService {
         private LocalDateTime data_hora_sessao;
         private String assentos_comprados;
         private double preco;
+        private double pagamento;
+        private boolean membro_fidelidade;
+        private double desconto_fidelidade;
 
         // Getters
         public String getReservaId() { return reserva_id; }
@@ -39,6 +42,9 @@ public class IngressoService {
         public LocalDateTime getDataHoraSessao() { return data_hora_sessao; }
         public String getAssentosComprados() { return assentos_comprados; }
         public double getPreco() { return preco; }
+        public double getPagamento() { return pagamento; }
+        public boolean isMembroFidelidade() { return membro_fidelidade; }
+        public double getDescontoFidelidade() { return desconto_fidelidade; }
     }
 
     public static List<DetalheIngresso> listarIngressosPorUsuario(String userId) {
@@ -88,6 +94,24 @@ public class IngressoService {
                     ingresso.data_hora_sessao = LocalDateTime.parse(json.get("data_hora_sessao").getAsString(), formatter);
                     ingresso.assentos_comprados = json.get("assentos_comprados").getAsString();
                     ingresso.preco = json.get("preco").getAsDouble();
+                    
+                    if (json.has("pagamento") && !json.get("pagamento").isJsonNull()) {
+                        ingresso.pagamento = json.get("pagamento").getAsDouble();
+                    } else {
+                        ingresso.pagamento = ingresso.preco;
+                    }
+                    
+                    if (json.has("membro_fidelidade") && !json.get("membro_fidelidade").isJsonNull()) {
+                        ingresso.membro_fidelidade = json.get("membro_fidelidade").getAsBoolean();
+                    } else {
+                        ingresso.membro_fidelidade = false;
+                    }
+                    
+                    if (json.has("desconto_fidelidade") && !json.get("desconto_fidelidade").isJsonNull()) {
+                        ingresso.desconto_fidelidade = json.get("desconto_fidelidade").getAsDouble();
+                    } else {
+                        ingresso.desconto_fidelidade = 0.0;
+                    }
                     
                     ingressos.add(ingresso);
                     System.out.println("[DEBUG IngressoService] Ingresso carregado: " + ingresso.getCodigoIngresso() + " - " + ingresso.getPecaTitulo());

@@ -84,12 +84,12 @@ public class HomeBarraLateral {
         } else { // Assume cliente ou outro tipo
             navButtons.getChildren().addAll(btnComprar, btnMeusIngressos, btnClube);
             // Define o estado inicial para cliente
-            botaoSelecionado = btnClube;
+        botaoSelecionado = btnClube;
             setCenterView(clubeFidelidadeViewProvider.getView(), true);
         }
 
         if (botaoSelecionado != null) {
-            botaoSelecionado.setBackground(BG_BOTAO_SELECIONADO);
+        botaoSelecionado.setBackground(BG_BOTAO_SELECIONADO);
         }
         
         sidebarPane.setCenter(navButtons);

@@ -63,7 +63,20 @@ public class PDFService {
 
             document.add(new Paragraph("Data/Hora: " + ingresso.getDataHoraSessao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), normalFont));
             document.add(new Paragraph("Assentos: " + ingresso.getAssentosComprados(), normalFont));
-            document.add(new Paragraph("Preço: R$ " + String.format("%.2f", ingresso.getPreco()), normalFont));
+
+            // Adicionar desconto de fidelidade se aplicável
+            if (ingresso.isMembroFidelidade()) {
+                Paragraph descontoFidelidade = new Paragraph("Desconto de Fidelidade (10%): -R$ " + 
+                    String.format("%.2f", ingresso.getDescontoFidelidade()), normalFont);
+                descontoFidelidade.setFont(FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, new BaseColor(40, 167, 69))); // Verde
+                document.add(descontoFidelidade);
+            }
+
+            // Adicionar valor total pago
+            Paragraph valorTotalPago = new Paragraph("Valor Total Pago: R$ " + String.format("%.2f", ingresso.getPagamento()), normalFont);
+            valorTotalPago.setFont(FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+            document.add(valorTotalPago);
+
             document.add(new Paragraph("ID da Reserva: " + ingresso.getReservaId(), normalFont));
             document.add(new Paragraph("Adquirido em: " + ingresso.getDataCompra().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), normalFont));
 
