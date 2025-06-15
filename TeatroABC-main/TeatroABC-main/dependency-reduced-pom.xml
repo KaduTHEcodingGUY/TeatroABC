@@ -11,6 +11,7 @@
       <resource>
         <directory>Pi Finalizado</directory>
         <includes>
+          <include>**/*.java</include>
           <include>**/*.fxml</include>
           <include>**/*.css</include>
           <include>**/*.jpg</include>

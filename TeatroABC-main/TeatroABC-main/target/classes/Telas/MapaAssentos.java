@@ -223,7 +223,7 @@ public class MapaAssentos implements ProvedorView {
         VBox centerContainer = new VBox(20);
         centerContainer.setAlignment(Pos.CENTER);
         centerContainer.getChildren().addAll(seatMap, btnComprar); // Adiciona o botão de comprar aqui
-
+        
         rootLayout.setCenter(centerContainer);
     }
     
@@ -246,16 +246,16 @@ public class MapaAssentos implements ProvedorView {
             } catch (Exception e) {
                 System.err.println("[ERRO MapaAssentos] Erro ao carregar a imagem do mapa do teatro: " + e.getMessage());
                 // Fallback para a tela e label existentes, caso a imagem não carregue
-                Arc telaShape = new Arc(0, 0, 200, 50, 0, -180);
-                telaShape.setType(ArcType.OPEN);
-                telaShape.setStroke(Color.WHITE);
-                telaShape.setStrokeWidth(2);
-                telaShape.setFill(Color.TRANSPARENT);
-                Label telaLabel = new Label("TELA");
-                telaLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-                telaLabel.setTextFill(Color.WHITE);
-                StackPane telaContainer = new StackPane(telaShape, telaLabel);
-                grid.add(telaContainer, 0, 0, 10, 1);
+        Arc telaShape = new Arc(0, 0, 200, 50, 0, -180);
+        telaShape.setType(ArcType.OPEN);
+        telaShape.setStroke(Color.WHITE);
+        telaShape.setStrokeWidth(2);
+        telaShape.setFill(Color.TRANSPARENT);
+        Label telaLabel = new Label("TELA");
+        telaLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        telaLabel.setTextFill(Color.WHITE);
+        StackPane telaContainer = new StackPane(telaShape, telaLabel);
+        grid.add(telaContainer, 0, 0, 10, 1);
             }
         } else { // Se for uma área específica, exibe os assentos
             System.out.println("[DEBUG MapaAssentos] Exibindo assentos para a área: " + areaId);
@@ -286,7 +286,7 @@ public class MapaAssentos implements ProvedorView {
                 int row = fileirasOrdenadas.indexOf(assento.getFileira()) + 2; // +2 para compensar a "TELA"
 
                 if (col >= 0 && row >= 2) { // Validação básica de posição
-                    ToggleButton seat = createSeatButton();
+                ToggleButton seat = createSeatButton();
                     seat.setUserData(assento.getId()); // Armazena o ID do assento
                     
                     boolean isReserved = assentosReservadosSessao.stream()

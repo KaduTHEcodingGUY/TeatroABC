@@ -44,7 +44,7 @@ public class HomeBarraLateral {
         rootLayout.setLeft(sidebarPane);
 
         // A tela inicial continua sendo o Clube Fidelidade
-        setCenterView(clubeFidelidadeViewProvider.getView(), true);
+        // REMOVIDO: setCenterView(clubeFidelidadeViewProvider.getView(), true);
         
         return rootLayout;
     }
@@ -66,17 +66,32 @@ public class HomeBarraLateral {
         VBox navButtons = new VBox(15);
         navButtons.setAlignment(Pos.TOP_CENTER);
         
-        // --- AQUI ESTÁ A ALTERAÇÃO ---
-        // Trocamos 'null' pela nova instância da tela de compra.
-        Button btnComprar = createNavButtonWithIcon("Comprar Ingressos", "/Utilitarios/ticket.png", new TelaCompraIngresso(this::setCenterView));
-        Button btnMeusIngressos = createNavButtonWithIcon("Meus Ingressos", "/Utilitarios/tickets.png", new MeusIngressos()); // Este continua sem ação
-        Button btnClube = createNavButtonWithIcon("Clube Fidelidade", "/Utilitarios/ClubedeFidelidadeVermelho.png", new ClubeFidelidade());
+        // Busca o usuário atual e seu tipo
+        String userId = AuthService.getCurrentUserId();
+        Usuario usuario = UsuarioService.buscarUsuarioPorId(userId);
+        String tipoUsuario = (usuario != null) ? usuario.getTipoUsuario() : "cliente"; // Assume 'cliente' como padrão
 
-        // Define o estado inicial
-        botaoSelecionado = btnClube;
-        botaoSelecionado.setBackground(BG_BOTAO_SELECIONADO);
+        Button btnComprar = createNavButtonWithIcon("Comprar Ingressos", "/Utilitarios/ticket.png", new TelaCompraIngresso(this::setCenterView));
+        Button btnMeusIngressos = createNavButtonWithIcon("Meus Ingressos", "/Utilitarios/tickets.png", new MeusIngressos());
+        Button btnClube = createNavButtonWithIcon("Clube Fidelidade", "/Utilitarios/ClubedeFidelidadeVermelho.png", new ClubeFidelidade());
+        Button btnEstatisticas = createNavButtonWithIcon("Estatisticas", "/Utilitarios/ClubedeFidelidadeVermelho.png", new TelaEstatisticas());
+
+        if ("gestor".equalsIgnoreCase(tipoUsuario)) {
+            navButtons.getChildren().addAll(btnEstatisticas);
+            // Define o estado inicial para gestor
+            botaoSelecionado = btnEstatisticas;
+            setCenterView(new TelaEstatisticas().getView(), true);
+        } else { // Assume cliente ou outro tipo
+            navButtons.getChildren().addAll(btnComprar, btnMeusIngressos, btnClube);
+            // Define o estado inicial para cliente
+            botaoSelecionado = btnClube;
+            setCenterView(clubeFidelidadeViewProvider.getView(), true);
+        }
+
+        if (botaoSelecionado != null) {
+            botaoSelecionado.setBackground(BG_BOTAO_SELECIONADO);
+        }
         
-        navButtons.getChildren().addAll(btnComprar, btnMeusIngressos, btnClube);
         sidebarPane.setCenter(navButtons);
 
         VBox profileSection = new VBox(10);
@@ -86,15 +101,7 @@ public class HomeBarraLateral {
         Circle avatarPlaceholder = new Circle(20, Color.GRAY);
         
         // Busca o usuário atual e exibe seu nome
-        String userId = AuthService.getCurrentUserId();
-        System.out.println("[DEBUG HomeBarraLateral] ID do usuário atual: " + userId);
-        
-        Usuario usuario = UsuarioService.buscarUsuarioPorId(userId);
-        System.out.println("[DEBUG HomeBarraLateral] Usuário encontrado: " + (usuario != null ? usuario.toString() : "null"));
-        
         userName = new Label(usuario != null ? usuario.getNomeCompleto() : "Usuário");
-        System.out.println("[DEBUG HomeBarraLateral] Nome exibido: " + userName.getText());
-        
         userName.setTextFill(Color.WHITE);
         userName.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
         userBox.getChildren().addAll(avatarPlaceholder, userName);

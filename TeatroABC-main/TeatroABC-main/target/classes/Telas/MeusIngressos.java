@@ -103,7 +103,7 @@ public class MeusIngressos implements ProvedorView {
         } else {
             System.err.println("[ERRO MeusIngressos] Usuário não logado. Não foi possível carregar ingressos.");
         }
-
+        
         ObservableList<Ticket> ingressos = FXCollections.observableArrayList(
             detalhesIngressos.stream()
                 .map(detalhe -> new Ticket(

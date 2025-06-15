@@ -1,60 +1,175 @@
 package Telas;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import Backend.SistemaTeatro;
-import java.awt.*;
+import Interfaces.ProvedorView;
+import Backend.Servicos.EstatisticasService;
+import java.util.Map;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 
-public class TelaEstatisticas extends JFrame {
-    private SistemaTeatro sistemaTeatro;
-    private JTable tabelaEstatisticas;
-    private DefaultTableModel modeloTabela;
-    private JButton btnAtualizar;
+// REMOVIDO: A classe não estende mais Application
+public class TelaEstatisticas implements ProvedorView {
 
-    public TelaEstatisticas() {
-        this.sistemaTeatro = SistemaTeatro.getInstancia();
+    private Label pecaMaisVendidaValor = createValueLabel();
+    private Label pecaMenosVendidaValor = createValueLabel();
+    private Label sessaoMaiorOcupacaoValor = createValueLabel();
+    private Label sessaoMenorOcupacaoValor = createValueLabel();
+    private Label faturamentoMedioValor = createValueValueLabel();
+    private Label assinantesValor = createValueLabel();
+    private Label feedbackLabel;
+    private Label pecaMaisLucrativaValor = createValueLabel();
+    private Label pecaMenosLucrativaValor = createValueLabel();
+    private Label faturamentoAssinaturasValor = createValueValueLabel();
+
+    // REMOVIDO: Método main() não é mais necessário aqui.
+    // REMOVIDO: Método start() não é mais necessário aqui.
+
+    // MODIFICADO: O método agora aceita o Stage para seguir o padrão da interface.
+    @Override
+    public Node getView() {
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setStyle("-fx-background-color: #1E1E1E;");
+        mainLayout.setPadding(new Insets(30));
+
+        Label title = new Label("Estatísticas do Teatro");
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 36));
+        title.setTextFill(Color.WHITE);
+        BorderPane.setAlignment(title, Pos.CENTER);
+        mainLayout.setTop(title);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(30);
+        grid.setVgap(30);
+        grid.setPadding(new Insets(40, 0, 0, 0));
+
+        // Primeira linha
+        grid.add(createMetricCard("Peça com Mais Ingressos Vendidos", pecaMaisVendidaValor), 0, 0);
+        grid.add(createMetricCard("Peça com Menos Ingressos Vendidos", pecaMenosVendidaValor), 1, 0);
+        grid.add(createMetricCard("Peça Mais Lucrativa", pecaMaisLucrativaValor), 2, 0);
+
+        // Segunda linha
+        grid.add(createMetricCard("Sessão com Maior Ocupação", sessaoMaiorOcupacaoValor), 0, 1);
+        grid.add(createMetricCard("Sessão com Menor Ocupação", sessaoMenorOcupacaoValor), 1, 1);
+        grid.add(createMetricCard("Peça Menos Lucrativa", pecaMenosLucrativaValor), 2, 1);
+
+        // Terceira linha
+        grid.add(createMetricCard("Faturamento Médio por Peça", faturamentoMedioValor), 0, 2);
+        grid.add(createMetricCard("Faturamento com Assinaturas", faturamentoAssinaturasValor), 1, 2);
+        grid.add(createMetricCard("Assinantes do Clube Fidelidade", assinantesValor), 2, 2);
+
+        mainLayout.setCenter(grid);
+
+        // Criando o container para o botão e o feedback
+        VBox bottomContainer = new VBox(10);
+        bottomContainer.setAlignment(Pos.CENTER);
+
+        Button btnAtualizar = new Button("Atualizar Estatísticas");
+        btnAtualizar.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold;");
         
-        configurarJanela();
-        inicializarComponentes();
-        atualizarUI();
-    }
+        // Criando o label de feedback
+        feedbackLabel = new Label("");
+        feedbackLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
+        feedbackLabel.setTextFill(Color.web("#28a745"));
+        feedbackLabel.setVisible(false);
 
-    private void configurarJanela() {
-        setTitle("Estatísticas do Teatro");
-        setSize(1000, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-    }
+        btnAtualizar.setOnAction(e -> {
+            carregarMetricasDoSupabase();
+            mostrarFeedback("Estatísticas atualizadas com sucesso!");
+        });
 
-    private void inicializarComponentes() {
-        JLabel titulo = new JLabel("ESTATÍSTICAS", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 36));
-        add(titulo, BorderLayout.NORTH);
-
-        String[] colunas = {"Critério", "Resultado"};
-        modeloTabela = new DefaultTableModel(colunas, 0);
-        tabelaEstatisticas = new JTable(modeloTabela);
-        tabelaEstatisticas.setRowHeight(30);
-        tabelaEstatisticas.setFont(new Font("Arial", Font.PLAIN, 14));
-        tabelaEstatisticas.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        bottomContainer.getChildren().addAll(btnAtualizar, feedbackLabel);
+        BorderPane.setAlignment(bottomContainer, Pos.CENTER);
+        BorderPane.setMargin(bottomContainer, new Insets(20, 0, 0, 0));
+        mainLayout.setBottom(bottomContainer);
         
-        JScrollPane scrollPane = new JScrollPane(tabelaEstatisticas);
-        add(scrollPane, BorderLayout.CENTER);
+        // Carrega os dados uma vez quando a tela é criada
+        carregarMetricasDoSupabase();
 
-        btnAtualizar = new JButton("Atualizar Estatísticas");
-        btnAtualizar.addActionListener(e -> atualizarUI());
-        add(btnAtualizar, BorderLayout.SOUTH);
+        return mainLayout;
     }
 
-    private void atualizarUI() {
-        modeloTabela.setRowCount(0); 
-        modeloTabela.addRow(new Object[]{"Peça com mais ingressos vendidos", sistemaTeatro.getPecaMaisIngressos()});
-        modeloTabela.addRow(new Object[]{"Peça com menos ingressos vendidos", sistemaTeatro.getPecaMenosIngressos()});
-        modeloTabela.addRow(new Object[]{"Sessão com maior ocupação", sistemaTeatro.getSessaoMaiorOcupacao()});
-        modeloTabela.addRow(new Object[]{"Sessão com menor ocupação", sistemaTeatro.getSessaoMenorOcupacao()});
-        modeloTabela.addRow(new Object[]{"Peça mais lucrativa", sistemaTeatro.getPecaMaisLucrativa()});
-        modeloTabela.addRow(new Object[]{"Peça menos lucrativa", sistemaTeatro.getPecaMenosLucrativa()});
-        modeloTabela.addRow(new Object[]{"Lucro médio do teatro por peça", sistemaTeatro.getLucroMedio()});
+    private void mostrarFeedback(String mensagem) {
+        feedbackLabel.setText(mensagem);
+        feedbackLabel.setVisible(true);
+
+        // Criando uma animação de fade out
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), feedbackLabel);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.0);
+        fadeTransition.setOnFinished(event -> feedbackLabel.setVisible(false));
+        fadeTransition.play();
+    }
+
+    private VBox createMetricCard(String titulo, Label valorLabel) {
+        VBox card = new VBox(10);
+        card.setAlignment(Pos.CENTER);
+        card.setPadding(new Insets(25));
+        card.setPrefSize(350, 150);
+        card.setStyle("-fx-background-color: #2D2D2D; -fx-background-radius: 10;");
+
+        Label tituloLabel = new Label(titulo);
+        tituloLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
+        tituloLabel.setTextFill(Color.LIGHTGRAY);
+        tituloLabel.setWrapText(true);
+        tituloLabel.setTextAlignment(TextAlignment.CENTER);
+
+        card.getChildren().addAll(tituloLabel, valorLabel);
+        return card;
+    }
+
+    private Label createValueLabel() {
+        Label label = new Label("Carregando...");
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        label.setTextFill(Color.WHITE);
+        return label;
+    }
+    
+    private Label createValueValueLabel() {
+        Label label = new Label("R$ 0,00");
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        label.setTextFill(Color.web("#28a745"));
+        return label;
+    }
+
+    private void carregarMetricasDoSupabase() {
+        System.out.println("Buscando métricas no Supabase...");
+        
+        Map<String, String> estatisticas = EstatisticasService.buscarEstatisticasGerais();
+
+        // ADICIONADO para depuração: Imprime o mapa de estatísticas
+        System.out.println("Estatísticas recebidas DO SUPABASE: " + estatisticas);
+
+        // Atualiza os labels com os dados do Supabase, usando "Sem valor" como padrão
+        pecaMaisVendidaValor.setText(getFormattedStatistic(estatisticas, "Peþa com mais ingressos vendidos"));
+        pecaMenosVendidaValor.setText(getFormattedStatistic(estatisticas, "Peþa com menos ingressos vendidos"));
+        sessaoMaiorOcupacaoValor.setText(getFormattedStatistic(estatisticas, "SessÒo com maior ocupaþÒo"));
+        sessaoMenorOcupacaoValor.setText(getFormattedStatistic(estatisticas, "SessÒo com menor ocupaþÒo"));
+        faturamentoMedioValor.setText(estatisticas.getOrDefault("Lucro mÚdio do teatro por peþa", "R$ 0,00"));
+        assinantesValor.setText(estatisticas.getOrDefault("N·mero total de assinantes", "0"));
+        pecaMaisLucrativaValor.setText(getFormattedStatistic(estatisticas, "Peþa mais lucrativa"));
+        pecaMenosLucrativaValor.setText(getFormattedStatistic(estatisticas, "Peþa menos lucrativa"));
+        faturamentoAssinaturasValor.setText(estatisticas.getOrDefault("Faturamento com assinaturas", "R$ 0,00"));
+    }
+
+    private String getFormattedStatistic(Map<String, String> statsMap, String key) {
+        String value = statsMap.get(key);
+        if (value == null || value.trim().isEmpty()) {
+            return "Sem valor";
+        } else {
+            return value;
+        }
     }
 }

@@ -10,6 +10,7 @@ Backend\CalculoLucro.class
 Backend\Servicos\ReservaService$AssentoReservaDetalhe.class
 Backend\Servicos\ReservaService$ReservaCriada.class
 Backend\Servicos\AssentoService$AssentoReservado.class
+Backend\Servicos\EstatisticasService.class
 Backend\Servicos\IngressoService.class
 Backend\Servicos\PecaService$Sessao.class
 Telas\MeusIngressos.class
